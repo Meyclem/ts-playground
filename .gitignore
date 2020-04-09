@@ -1,5 +1,4 @@
 *.DS_store
 node_modules
 .env_vars
-yarn.lock
 yarn-error.log
