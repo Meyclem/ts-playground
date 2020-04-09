@@ -1,0 +1,60 @@
+{
+  "name": "ts-playground",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "license": "MIT",
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "start": "ts-node usage-example.ts",
+    "test": "eslint --ext .js,.ts . && jest"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.1.4",
+    "@types/node": "^13.11.1",
+    "@typescript-eslint/eslint-plugin": "^2.24.0",
+    "@typescript-eslint/parser": "^2.24.0",
+    "eslint": "^6.8.0",
+    "fs": "^0.0.1-security",
+    "jest": "^25.1.0",
+    "ts-jest": "^25.2.1",
+    "ts-node": "^8.7.0",
+    "typescript": "^3.8.3"
+  },
+  "eslintConfig": {
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "ecmaVersion": 6,
+      "sourceType": "module"
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/eslint-recommended",
+      "plugin:@typescript-eslint/recommended"
+    ],
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "env": {
+      "browser": true,
+      "node": true
+    },
+    "ignorePatterns": [
+      "node_modules/",
+      "*.test.ts"
+    ],
+    "rules": {
+      "@typescript-eslint/explicit-function-return-type": 1
+    }
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "globals": {
+      "ts-jest": {
+        "diagnostics": {
+          "warnOnly": true
+        }
+      }
+    },
+    "testEnvironment": "node"
+  }
+}
