@@ -1,6 +1,5 @@
 import { promisifiedReadFile } from "./"
 
-promisifiedReadFile('./src/lib/fs-promisified/user.json')
+promisifiedReadFile('./data/user.json')
   .then(result => console.log(result))
   .catch(error => console.error(error))
-
