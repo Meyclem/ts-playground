@@ -48,7 +48,8 @@
     },
     "ignorePatterns": [
       "node_modules/",
-      "*.test.ts"
+      "*.test.ts",
+      "mongo-init.js"
     ],
     "rules": {
       "@typescript-eslint/explicit-function-return-type": 1,
