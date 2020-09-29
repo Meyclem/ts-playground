@@ -74,7 +74,7 @@ export default class Game implements GameInput {
             resultsPerPage,
             currentPage: page,
             pageCount: Math.ceil(count / resultsPerPage),
-            results,
+            results: results.map((result) => new Game(result)),
           };
         });
     });

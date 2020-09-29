@@ -49,10 +49,10 @@ export interface PlatformInput {
   checksum: string;
 }
 
-export interface Paginated<T> {
+export type Paginated<T> = {
   totalCount: number;
   resultsPerPage: number;
   currentPage: number;
   pageCount: number;
   results: T[];
-}
+};
