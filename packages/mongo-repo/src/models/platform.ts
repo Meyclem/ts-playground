@@ -7,38 +7,52 @@ export default class Platform implements PlatformInput {
 
   _id?: PlatformInput["_id"];
   id: PlatformInput["id"];
-  collection: PlatformInput["collection"];
-  cover: PlatformInput["cover"];
-  first_release_date: PlatformInput["first_release_date"];
-  genres: PlatformInput["genres"];
+  abbreviation: PlatformInput["abbreviation"];
+  alternative_name: PlatformInput["alternative_name"];
+  category: PlatformInput["category"];
+  created_at: PlatformInput["created_at"];
+  generation: PlatformInput["generation"];
   name: PlatformInput["name"];
-  platforms: PlatformInput["platforms"];
-  release_dates: PlatformInput["release_dates"];
+  platform_logo: PlatformInput["platform_logo"];
+  product_family: PlatformInput["product_family"];
   slug: PlatformInput["slug"];
-  summary: PlatformInput["summary"];
+  updated_at: PlatformInput["updated_at"];
   url: PlatformInput["url"];
+  versions: PlatformInput["versions"];
+  checksum: PlatformInput["checksum"];
 
   constructor(data: PlatformInput) {
     this.id = data.id;
-    this._id = data._id;
-    this.collection = data.collection;
-    this.cover = data.cover;
-    this.first_release_date = data.first_release_date;
-    this.genres = data.genres;
+    this.abbreviation = data.abbreviation;
+    this.alternative_name = data.alternative_name;
+    this.category = data.category;
+    this.created_at = data.created_at;
+    this.generation = data.generation;
     this.name = data.name;
-    this.platforms = data.platforms;
-    this.release_dates = data.release_dates;
+    this.platform_logo = data.platform_logo;
+    this.product_family = data.product_family;
     this.slug = data.slug;
-    this.summary = data.summary;
+    this.updated_at = data.updated_at;
     this.url = data.url;
+    this.versions = data.versions;
+    this.checksum = data.checksum;
   }
 
   static init(db: Db): void {
     this.db = db;
   }
 
-  static findById(id: number): Promise<any> {
-    return this.db.collection("games").findOne({ id });
+  static findById(id: number): Promise<Platform | null> {
+    return this.db
+      .collection("platforms")
+      .findOne({ id })
+      .then((platformData: Platform) => {
+        if (platformData) {
+          return new Platform(platformData);
+        } else {
+          return null;
+        }
+      });
   }
 
   public getGames(): Promise<Game[]> {

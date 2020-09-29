@@ -7,17 +7,14 @@ initDatabase().then(async (client) => {
   Game.init(db);
   Platform.init(db);
 
-  const gameData = await Game.findById(48510);
+  const game = await Game.findById(48510);
+  game && console.log(game);
 
-  if (gameData) {
-    const game = new Game(gameData);
+  const nes = await Platform.findById(18);
+  nes && console.log(nes.category);
 
-    const [nes] = await game.getPlatforms();
-
-    const games = await nes.getGames();
-
-    console.log(games.length);
-  }
+  const paginatedMarios = await Game.searchWithPagination({ query: { name: /mario/i } });
+  paginatedMarios && console.log(paginatedMarios);
 
   client.close();
 });

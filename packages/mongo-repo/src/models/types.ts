@@ -34,16 +34,19 @@ export interface PlatformInput {
   games?: GameInput[];
   _id?: ObjectId;
   id: number;
-  collection: Record<string, unknown>;
-  cover: Record<string, unknown>;
-  first_release_date: number;
-  genres: Record<string, unknown>;
+  abbreviation: string;
+  alternative_name: string;
+  category: number;
+  created_at: number;
+  generation: 3;
   name: string;
-  platforms: number[];
-  release_dates: Record<string, unknown>[];
+  platform_logo: Record<string, unknown>;
+  product_family: number;
   slug: string;
-  summary: string;
+  updated_at: number;
   url: string;
+  versions: Record<string, unknown>;
+  checksum: string;
 }
 
 export interface Paginated<T> {
