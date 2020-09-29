@@ -8,19 +8,16 @@ initDatabase().then(async (client) => {
   Platform.init(db);
 
   const gameData = await Game.findById(48510);
-  const game = new Game(gameData);
 
-  console.log(game);
+  if (gameData) {
+    const game = new Game(gameData);
 
-  const platforms = await game.getPlatforms();
+    const [nes] = await game.getPlatforms();
 
-  const nes = new Platform(platforms[0]);
+    const games = await nes.getGames();
 
-  const games = await nes.getGames();
-  const first = new Game(games[0]);
-  console.log(first);
-
-  // console.log(platforms);
+    console.log(games.length);
+  }
 
   client.close();
 });

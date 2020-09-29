@@ -1,32 +1,36 @@
 import { Db } from "mongodb";
+import { GameInput, PlatformInput } from "./types";
+import Game from "./game";
 
-export default class Platform {
+export default class Platform implements PlatformInput {
   static db: Db;
 
-  id: number;
-  // collection: Record<string, unknown>;
-  // cover: Record<string, unknown>;
-  // first_release_date: number;
-  // genres: Record<string, unknown>;
-  // name: string;
-  // platforms: number[];
-  // release_dates: Record<string, unknown>[];
-  // slug: string;
-  // summary: string;
-  // url: string;
+  _id?: PlatformInput["_id"];
+  id: PlatformInput["id"];
+  collection: PlatformInput["collection"];
+  cover: PlatformInput["cover"];
+  first_release_date: PlatformInput["first_release_date"];
+  genres: PlatformInput["genres"];
+  name: PlatformInput["name"];
+  platforms: PlatformInput["platforms"];
+  release_dates: PlatformInput["release_dates"];
+  slug: PlatformInput["slug"];
+  summary: PlatformInput["summary"];
+  url: PlatformInput["url"];
 
-  constructor(data: any) {
+  constructor(data: PlatformInput) {
     this.id = data.id;
-    // this.collection = data.collection;
-    // this.cover = data.cover;
-    // this.first_release_date = data.first_release_date;
-    // this.genres = data.genres;
-    // this.name = data.name;
-    // this.platforms = data.platforms;
-    // this.release_dates = data.release_dates;
-    // this.slug = data.slug;
-    // this.summary = data.summary;
-    // this.url = data.url;
+    this._id = data._id;
+    this.collection = data.collection;
+    this.cover = data.cover;
+    this.first_release_date = data.first_release_date;
+    this.genres = data.genres;
+    this.name = data.name;
+    this.platforms = data.platforms;
+    this.release_dates = data.release_dates;
+    this.slug = data.slug;
+    this.summary = data.summary;
+    this.url = data.url;
   }
 
   static init(db: Db): void {
@@ -37,10 +41,11 @@ export default class Platform {
     return this.db.collection("games").findOne({ id });
   }
 
-  getGames(): Promise<Record<string, unknown>[]> {
+  public getGames(): Promise<Game[]> {
     return Platform.db
-      .collection("games")
+      .collection<GameInput>("games")
       .find({ platforms: { $in: [this.id] } })
-      .toArray();
+      .toArray()
+      .then((results) => results.map((result) => new Game(result)));
   }
 }
