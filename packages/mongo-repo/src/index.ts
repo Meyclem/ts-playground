@@ -8,11 +8,11 @@ initDatabase().then(async (client) => {
   Platform.init(db);
 
   const game = await Game.findById(48510);
-  game && console.log(game);
-  game && console.log(game instanceof Game);
+  console.log(game);
+  console.log(game instanceof Game);
 
   const nes = await Platform.findById(18);
-  nes && console.log(nes.category);
+  console.log(nes.category);
 
   const paginatedMarios = await Game.searchWithPagination({ query: { name: /mario/i } });
   console.log(paginatedMarios);

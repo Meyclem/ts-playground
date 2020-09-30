@@ -1,6 +1,7 @@
 import { Db } from "mongodb";
 import { GameInput, PlatformInput } from "./types";
 import Game from "./game";
+import { PlatformNotFoundError } from "../../utils/errors";
 
 export default class Platform implements PlatformInput {
   static db: Db;
@@ -42,7 +43,7 @@ export default class Platform implements PlatformInput {
     this.db = db;
   }
 
-  static findById(id: number): Promise<Platform | null> {
+  static findById(id: number): Promise<Platform> {
     return this.db
       .collection("platforms")
       .findOne({ id })
@@ -50,7 +51,7 @@ export default class Platform implements PlatformInput {
         if (platformData) {
           return new Platform(platformData);
         } else {
-          return null;
+          throw new PlatformNotFoundError("Platform not found");
         }
       });
   }

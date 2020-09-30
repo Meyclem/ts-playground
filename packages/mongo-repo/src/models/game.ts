@@ -1,6 +1,7 @@
 import { Db } from "mongodb";
 import { GameInput, PlatformInput, Paginated } from "./types";
 import Platform from "./platform";
+import { GameNotFoundError } from "../../utils/errors";
 
 export default class Game implements GameInput {
   static db: Db;
@@ -22,11 +23,17 @@ export default class Game implements GameInput {
     this.db = db;
   }
 
-  static findById(id: number): Promise<Game | null> {
+  static findById(id: number): Promise<Game> {
     return this.db
       .collection("games")
       .findOne({ id })
-      .then((data: GameInput) => (data ? new Game(data) : null));
+      .then((data: GameInput) => {
+        if (data) {
+          return new Game(data);
+        } else {
+          throw new GameNotFoundError("Game not found");
+        }
+      });
   }
 
   static find(query: Record<string, unknown>): Promise<Game[]> {
