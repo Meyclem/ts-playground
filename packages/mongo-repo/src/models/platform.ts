@@ -1,42 +1,41 @@
-import { Db } from "mongodb";
-import { GameInput, PlatformInput } from "./types";
-import Game from "./game";
+import { Db, ObjectId } from "mongodb";
+import { JsonGame, JsonPlatform, Game } from "./types";
 import { PlatformNotFoundError } from "../../utils/errors";
 
-export default class Platform implements PlatformInput {
+export class Platform {
   static db: Db;
 
-  _id?: PlatformInput["_id"];
-  id: PlatformInput["id"];
-  abbreviation: PlatformInput["abbreviation"];
-  alternative_name: PlatformInput["alternative_name"];
-  category: PlatformInput["category"];
-  created_at: PlatformInput["created_at"];
-  generation: PlatformInput["generation"];
-  name: PlatformInput["name"];
-  platform_logo: PlatformInput["platform_logo"];
-  product_family: PlatformInput["product_family"];
-  slug: PlatformInput["slug"];
-  updated_at: PlatformInput["updated_at"];
-  url: PlatformInput["url"];
-  versions: PlatformInput["versions"];
-  checksum: PlatformInput["checksum"];
+  _id?: ObjectId;
+  id: JsonPlatform["id"];
+  abbreviation: JsonPlatform["abbreviation"];
+  alternative_name: JsonPlatform["alternative_name"];
+  category: JsonPlatform["category"];
+  created_at: JsonPlatform["created_at"];
+  generation: JsonPlatform["generation"];
+  name: JsonPlatform["name"];
+  platform_logo: JsonPlatform["platform_logo"];
+  product_family: JsonPlatform["product_family"];
+  slug: JsonPlatform["slug"];
+  updated_at: JsonPlatform["updated_at"];
+  url: JsonPlatform["url"];
+  versions: JsonPlatform["versions"];
+  checksum: JsonPlatform["checksum"];
 
-  constructor(data: PlatformInput) {
-    this.id = data.id;
-    this.abbreviation = data.abbreviation;
-    this.alternative_name = data.alternative_name;
-    this.category = data.category;
-    this.created_at = data.created_at;
-    this.generation = data.generation;
-    this.name = data.name;
-    this.platform_logo = data.platform_logo;
-    this.product_family = data.product_family;
-    this.slug = data.slug;
-    this.updated_at = data.updated_at;
-    this.url = data.url;
-    this.versions = data.versions;
-    this.checksum = data.checksum;
+  constructor(jsonData: JsonPlatform) {
+    this.id = jsonData.id;
+    this.abbreviation = jsonData.abbreviation;
+    this.alternative_name = jsonData.alternative_name;
+    this.category = jsonData.category;
+    this.created_at = jsonData.created_at;
+    this.generation = jsonData.generation;
+    this.name = jsonData.name;
+    this.platform_logo = jsonData.platform_logo;
+    this.product_family = jsonData.product_family;
+    this.slug = jsonData.slug;
+    this.updated_at = jsonData.updated_at;
+    this.url = jsonData.url;
+    this.versions = jsonData.versions;
+    this.checksum = jsonData.checksum;
   }
 
   static init(db: Db): void {
@@ -47,7 +46,7 @@ export default class Platform implements PlatformInput {
     return this.db
       .collection("platforms")
       .findOne({ id })
-      .then((platformData: Platform) => {
+      .then((platformData: JsonPlatform) => {
         if (platformData) {
           return new Platform(platformData);
         } else {
@@ -58,8 +57,8 @@ export default class Platform implements PlatformInput {
 
   public getGames(): Promise<Game[]> {
     return Platform.db
-      .collection<GameInput>("games")
-      .find({ platforms: { $in: [this.id] } })
+      .collection<Game>("games")
+      .find({ "platforms._id": { $in: [this.id] } })
       .toArray()
       .then((results) => results.map((result) => new Game(result)));
   }

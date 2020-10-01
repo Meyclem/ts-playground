@@ -1,22 +1,4 @@
-import { ObjectId } from "mongodb";
-
-type ReleaseDateInput = {
-  id: number;
-  category: number;
-  created_at: number;
-  date: number;
-  game: number;
-  human: string;
-  m: number;
-  platform: number;
-  region: number;
-  updated_at: number;
-  y: number;
-  checksum: string;
-};
-
-export interface GameInput {
-  _id?: ObjectId;
+export interface JsonGame {
   id: number;
   collection: Record<string, unknown>;
   cover: Record<string, unknown>;
@@ -24,15 +6,14 @@ export interface GameInput {
   genres: Record<string, unknown>;
   name: string;
   platforms: number[];
-  release_dates: ReleaseDateInput[];
+  release_dates: Record<string, unknown>;
   slug: string;
   summary: string;
   url: string;
 }
 
-export interface PlatformInput {
-  games?: GameInput[];
-  _id?: ObjectId;
+export interface JsonPlatform {
+  games: JsonGame[];
   id: number;
   abbreviation: string;
   alternative_name: string;
@@ -56,3 +37,6 @@ export type Paginated<T> = {
   pageCount: number;
   results: T[];
 };
+
+export { Game, GameForm } from "./game";
+export { Platform } from "./platform";

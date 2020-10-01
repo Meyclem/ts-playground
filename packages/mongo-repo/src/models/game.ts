@@ -1,52 +1,24 @@
-import { Db } from "mongodb";
-import { GameInput, PlatformInput, Paginated } from "./types";
+import { Db, ObjectId } from "mongodb";
+import { JsonGame, JsonPlatform, Paginated } from "./types";
 import Platform from "./platform";
 import { GameNotFoundError } from "../../utils/errors";
 
-export default class Game implements GameInput {
-  static db: Db;
+export class Game {
+  _id?: ObjectId;
+  code: JsonGame["id"];
+  collection: JsonGame["collection"];
+  cover: JsonGame["cover"];
+  first_release_date: JsonGame["first_release_date"];
+  genres: JsonGame["genres"];
+  name: JsonGame["name"];
+  platforms: Pick<Platform, "_id" | "name" | "slug">[];
+  release_dates: JsonGame["release_dates"];
+  slug: JsonGame["slug"];
+  summary: JsonGame["summary"];
+  url: JsonGame["url"];
 
-  _id?: GameInput["_id"];
-  id: GameInput["id"];
-  collection: GameInput["collection"];
-  cover: GameInput["cover"];
-  first_release_date: GameInput["first_release_date"];
-  genres: GameInput["genres"];
-  name: GameInput["name"];
-  platforms: GameInput["platforms"];
-  release_dates: GameInput["release_dates"];
-  slug: GameInput["slug"];
-  summary: GameInput["summary"];
-  url: GameInput["url"];
-
-  static init(db: Db): void {
-    this.db = db;
-  }
-
-  static findById(id: number): Promise<Game> {
-    return this.db
-      .collection("games")
-      .findOne({ id })
-      .then((data: GameInput) => {
-        if (data) {
-          return new Game(data);
-        } else {
-          throw new GameNotFoundError("Game not found");
-        }
-      });
-  }
-
-  static find(query: Record<string, unknown>): Promise<Game[]> {
-    return this.db
-      .collection<GameInput>("games")
-      .find(query)
-      .toArray()
-      .then((docs) => docs.map((doc: GameInput) => new Game(doc)));
-  }
-
-  constructor(data: GameInput) {
-    this._id = data._id;
-    this.id = data.id;
+  constructor(data: Game) {
+    this.code = data.code;
     this.collection = data.collection;
     this.cover = data.cover;
     this.first_release_date = data.first_release_date;
@@ -59,15 +31,19 @@ export default class Game implements GameInput {
     this.url = data.url;
   }
 
-  getPlatforms(): Promise<Platform[]> {
-    return Game.db
-      .collection<PlatformInput>("platforms")
-      .find({ id: { $in: this.platforms } })
-      .toArray()
-      .then((results) => results.map((result) => new Platform(result)));
+  toJson(): string {
+    return "";
+  }
+}
+
+export class GameRepository {
+  private db: Db;
+
+  constructor(db: Db) {
+    this.db = db;
   }
 
-  static searchWithPagination({ query = {}, page = 1, resultsPerPage = 20 } = {}): Promise<Paginated<Game>> {
+  searchWithPagination({ query = {}, page = 1, resultsPerPage = 20 } = {}): Promise<Paginated<Game>> {
     const cursor = this.db.collection("games").find(query);
 
     return cursor.count().then((count) => {
@@ -85,5 +61,26 @@ export default class Game implements GameInput {
           };
         });
     });
+  }
+
+  find(query: Record<string, unknown>): Promise<Game[]> {
+    return this.db
+      .collection<JsonGame>("games")
+      .find(query)
+      .toArray()
+      .then((docs) => docs.map((doc: JsonGame) => new Game(doc)));
+  }
+
+  findById(id: number): Promise<Game> {
+    return this.db
+      .collection("games")
+      .findOne({ id })
+      .then((data: JsonGame) => {
+        if (data) {
+          return new Game(data);
+        } else {
+          throw new GameNotFoundError("Game not found");
+        }
+      });
   }
 }
