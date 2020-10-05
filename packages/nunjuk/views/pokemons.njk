@@ -1,0 +1,11 @@
+{% extends "layout.njk" %}
+
+{% block content %}
+  <div>
+    <ul>
+      {% for pokemon in pokemons %}
+        <li><a href="/pokemons/{{ pokemon.name }}">{{ pokemon.name }}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}
