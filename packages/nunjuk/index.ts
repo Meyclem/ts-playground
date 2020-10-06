@@ -12,7 +12,7 @@ type Pokemon = {
 };
 
 function fetchKantoPokemon(): Promise<Pokemon[]> {
-  return fetch("https://pokeapi.co/api/v2/pokemon?limit=2000")
+  return fetch("https://pokeapi.co/api/v2/pokemon?limit=151")
     .then((response) => response.json())
     .then((parsedResponse) => parsedResponse.results.sort((r: Pokemon) => r.name));
 }
@@ -23,7 +23,9 @@ function getPokemon(name: string): Promise<Pokemon> {
 
 const app = express();
 
-app.use(express.static("public"));
+app.use("/assets", express.static("public"));
+// ⚠️ create routes "/assets" which have the public folder
+// all assets/* routes will
 
 nunjucks.configure("views", {
   autoescape: true,
@@ -33,22 +35,31 @@ nunjucks.configure("views", {
 app.set("views", __dirname + "/views");
 app.set("view engine", "njk");
 
+const clientWantJson = (request: express.Request): boolean => request.get("accept") === "application/json";
+
 async function start(): Promise<void> {
   const pokemons = await fetchKantoPokemon();
   console.log(pokemons.sort((a, b) => (a.name > b.name ? 1 : -1)));
 
-  app.get("/pokemons", function (_request, response) {
-    response.render("pokemons", { pokemons });
+  app.get("/pokemons", (request, response) => {
+    if (clientWantJson(request)) {
+      response.json(pokemons);
+    } else {
+      response.render("pokemons", { pokemons });
+    }
   });
 
   app.get("/pokemons/:name", async function (request, response) {
     const pokemon = await getPokemon(request.params.name);
-    console.log(pokemon);
-    response.render("pokemon", { pokemon });
+    if (clientWantJson(request)) {
+      response.json(pokemon);
+    } else {
+      response.render("pokemon", { pokemon });
+    }
   });
 
   app.get("/*", (request, response) => {
-    response.render("notfound");
+    response.status(404).render("notfound");
   });
 
   app.listen(process.env.PORT, () => {

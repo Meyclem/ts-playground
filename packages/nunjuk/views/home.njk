@@ -4,8 +4,9 @@
   <div>
     <ul>
       {% for game in games %}
-        <li><a href="/games/{{ game.id }}">{{ game.name }}</a></li>
-      
+        <li>
+          <a href="/games/{{ game.id }}">{{ game.name }}</a>
+        </li>
       {% endfor %}
     </ul>
   </div>
