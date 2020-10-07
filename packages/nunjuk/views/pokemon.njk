@@ -15,9 +15,9 @@
     {% endfor %}
     </div>    
     <h2>Possible moves</h2>
-    <ul>
+    <ul class="list-group">
       {% for move in pokemon.moves %}
-        <li>{{move.move.name}}</li>
+        <li class="list-group-item">{{move.move.name}}</li>
       {% endfor %}
     </ul>
   </div>
