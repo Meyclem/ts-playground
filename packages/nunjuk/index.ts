@@ -24,8 +24,6 @@ function getPokemon(name: string): Promise<Pokemon> {
 const app = express();
 
 app.use("/assets", express.static("public"));
-// ⚠️ create routes "/assets" which have the public folder
-// all assets/* routes will
 
 nunjucks.configure("views", {
   autoescape: true,
